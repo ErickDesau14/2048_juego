@@ -16,9 +16,10 @@ export class GamePage implements OnInit {
   constructor() { 
 
     this.board = [
-      null, null, null, null, 
-      null, null, null, null, 
-      null, null, null, null
+      [null, null, null, null], 
+      [null, null, null, null], 
+      [null, null, null, null],
+      [null, null, null, null]
     ];
     this.rows = Array(4).fill(0);
     this.cols = Array(4).fill(0);
