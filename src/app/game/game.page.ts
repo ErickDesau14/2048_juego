@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Cell } from '../models/cell';
 
 @Component({
   selector: 'app-game',
@@ -7,7 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamePage implements OnInit {
 
-  constructor() { }
+  public board: Cell[][]; // Matriz de celdas
+
+  public rows: number[];
+  public cols: number[];
+
+  constructor() { 
+
+    this.board = [
+      null, null, null, null, 
+      null, null, null, null, 
+      null, null, null, null
+    ];
+    this.rows = Array(4).fill(0);
+    this.cols = Array(4).fill(0);
+
+
+  }
 
   ngOnInit() {
   }
