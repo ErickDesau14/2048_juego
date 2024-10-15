@@ -23,7 +23,8 @@ export class GamePage implements AfterViewInit {
   private DIRECTION_DOWN = 1;
   private DIRECTION_LEFT = 2;
   private DIRECTION_RIGHT = 3;
-  
+
+  private hasMovement: boolean;
 
   constructor(
     private gestureController: GestureController
@@ -39,7 +40,7 @@ export class GamePage implements AfterViewInit {
     this.cols = Array(4).fill(0);
     this.generateRandomNumber();
     this.generateRandomNumber();
-
+    this.hasMovement = false;
   }
   ngAfterViewInit(): void {
 
@@ -77,6 +78,8 @@ export class GamePage implements AfterViewInit {
       this.direction = this.DIRECTION_RIGHT;
       this.moveRight();
     }
+
+    this.checkMove();
     
   }
 
@@ -93,6 +96,8 @@ export class GamePage implements AfterViewInit {
       this.direction = this.DIRECTION_DOWN;
       this.moveDown();
     }
+
+    this.checkMove();
     
   }
 
@@ -278,6 +283,8 @@ export class GamePage implements AfterViewInit {
 
         this.board[i][j] = null;
 
+        this.hasMovement = true;
+
       }
     }
   }
@@ -291,6 +298,16 @@ export class GamePage implements AfterViewInit {
         
       }
       
+    }
+  }
+
+  checkMove(){
+    if (this.hasMovement) {
+      this.generateRandomNumber();
+
+      this.hasMovement = false;
+
+      this.clearBlockedCells();
     }
   }
 
