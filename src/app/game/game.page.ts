@@ -247,6 +247,12 @@ export class GamePage implements AfterViewInit {
       break;
     }
 
+    if (rowNew !== undefined && colNew !== undefined) {
+      return [rowNew, colNew];
+    }
+
+    return null;
+
   }
 
 }
