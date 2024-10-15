@@ -309,7 +309,11 @@ export class GamePage implements AfterViewInit {
   }
 
   checkMove(){
-    if (this.hasMovement) {
+
+    if (this.winGame()) {
+      console.log("Ganaste");
+      
+    } else if (this.hasMovement) {
       this.generateRandomNumber();
 
       this.hasMovement = false;
@@ -318,6 +322,17 @@ export class GamePage implements AfterViewInit {
 
       this.clearBlockedCells();
     }
+  }
+
+  winGame(){
+    for (let i = 0; i < this.board.length; i++) {
+    for (let j = 0; j < this.board[i].length; j++) {
+        if (this.board[i][j] != null && this.board[i][j].value === 2048) {
+          return true
+        }    
+      }      
+    }
+    return false;
   }
 
 }
