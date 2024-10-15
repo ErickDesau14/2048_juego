@@ -120,7 +120,7 @@ export class GamePage implements AfterViewInit {
   moveLeft(){
     for (let i = 0; i < this.board.length; i++) {
       for (let j = 1; j < this.board[i].length; j++) {
-        
+        this.processPosition(i, j);
       }    
     }
   }
@@ -128,7 +128,7 @@ export class GamePage implements AfterViewInit {
   moveRight(){
     for (let i = 0; i < this.board.length; i++) {
       for (let j = this.board[i].length - 2; j >= 0; j--) {
-        
+        this.processPosition(i, j);
       }    
     }
   }
@@ -136,7 +136,7 @@ export class GamePage implements AfterViewInit {
   moveUp(){
     for (let i = 1; i < this.board.length; i++) {
       for (let j = 0; j < this.board[i].length; j++) {
-        
+        this.processPosition(i, j);
       }    
     }
   }
@@ -144,7 +144,7 @@ export class GamePage implements AfterViewInit {
   moveDown(){
     for (let i = this.board.length; i >= 0; i--) {
       for (let j = 0; j < this.board[i].length; j++) {
-        
+        this.processPosition(i, j);
       }    
     }
   }
@@ -253,6 +253,33 @@ export class GamePage implements AfterViewInit {
 
     return null;
 
+  }
+
+  processPosition(i: number, j: number){
+    const cell = this.board[i][j];
+    if (cell != null) {
+      const nextPosition = this.nextPositionFree(i,j, cell.value);
+
+      if (nextPosition) {
+        const row = nextPosition[0];
+        const col = nextPosition[1];
+
+        if (!this.board[row][col]) {
+          this.board[row][col] = new Cell();
+        }
+
+        if (cell.value == this.board[row][col].value) {
+          const points = cell.value * 2;
+          this.board[row][col].value = points;
+          this.board[row][col].blocked = true;
+        } else {
+          this.board[row][col] = cell;
+        }
+
+        this.board[i][j] = null;
+
+      }
+    }
   }
 
 }
