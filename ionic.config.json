@@ -1,0 +1,7 @@
+{
+  "name": "09_2048_juego",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
