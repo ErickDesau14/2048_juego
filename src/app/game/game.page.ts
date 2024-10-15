@@ -178,6 +178,26 @@ export class GamePage implements AfterViewInit {
 
       break;
       case this.DIRECTION_RIGHT:
+        rowNew = rowOri;
+        for (let j = colOri + 1; j < this.board[rowOri].length && !found; j++) {
+          if(this.board[rowOri][j] != null){
+            found = true;
+
+            if (this.board[rowOri][j].blocked) {
+              colNew = j - 1;
+            } else if(this.board[rowOri][j].value == numberOriginal) {
+              colNew = j;
+            } else if ( (j - 1) != colOri) {
+              colNew = j - 1;
+            }
+
+          }
+  
+        }
+
+        if(!found){
+          colNew = this.board[rowOri].length - 1;
+        }
 
       break;
       case this.DIRECTION_UP:
