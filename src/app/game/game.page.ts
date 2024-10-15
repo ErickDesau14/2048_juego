@@ -149,4 +149,45 @@ export class GamePage implements AfterViewInit {
     }
   }
 
+  nextPositionFree(rowOri: number, colOri: number, numberOriginal: number){
+    let rowNew: number;
+    let colNew: number;
+    let found: boolean;
+
+    switch(this.direction){
+      case this.DIRECTION_LEFT:
+        rowNew = rowOri;
+        for (let j = colOri - 1; j >= 0 && !found; j--) {
+          if(this.board[rowOri][j] != null){
+            found = true;
+
+            if (this.board[rowOri][j].blocked) {
+              colNew = j + 1;
+            } else if(this.board[rowOri][j].value == numberOriginal) {
+              colNew = j;
+            } else if ( (j + 1) != colOri) {
+              colNew = j + 1;
+            }
+
+          }  
+        }
+
+        if(!found){
+          colNew = 0;
+        }
+
+      break;
+      case this.DIRECTION_RIGHT:
+
+      break;
+      case this.DIRECTION_UP:
+
+      break;
+      case this.DIRECTION_DOWN:
+
+      break;
+    }
+
+  }
+
 }
