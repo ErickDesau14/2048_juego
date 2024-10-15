@@ -26,6 +26,9 @@ export class GamePage implements AfterViewInit {
 
   private hasMovement: boolean;
 
+  public points: number;
+  private pointsRound: number;
+
   constructor(
     private gestureController: GestureController
   ) { 
@@ -41,6 +44,8 @@ export class GamePage implements AfterViewInit {
     this.generateRandomNumber();
     this.generateRandomNumber();
     this.hasMovement = false;
+    this.points = 0;
+    this.pointsRound = 0;
   }
   ngAfterViewInit(): void {
 
@@ -87,7 +92,7 @@ export class GamePage implements AfterViewInit {
     console.log("Vertical");
     console.log(detail);
     
-    if(detail.deltaX < 0){
+    if(detail.deltaY < 0){
       console.log("Arriba");
       this.direction = this.DIRECTION_UP;
       this.moveUp();
@@ -147,7 +152,7 @@ export class GamePage implements AfterViewInit {
   }
 
   moveDown(){
-    for (let i = this.board.length; i >= 0; i--) {
+    for (let i = this.board.length - 2; i >= 0; i--) {
       for (let j = 0; j < this.board[i].length; j++) {
         this.processPosition(i, j);
       }    
@@ -277,6 +282,8 @@ export class GamePage implements AfterViewInit {
           const points = cell.value * 2;
           this.board[row][col].value = points;
           this.board[row][col].blocked = true;
+          this.points += points;
+          this.pointsRound += points;
         } else {
           this.board[row][col] = cell;
         }
@@ -306,6 +313,8 @@ export class GamePage implements AfterViewInit {
       this.generateRandomNumber();
 
       this.hasMovement = false;
+
+      this.pointsRound = 0;
 
       this.clearBlockedCells();
     }
