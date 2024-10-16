@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, viewChild } from '@angular/core';
 import { Cell } from '../models/cell';
-import { AnimationController, GestureController, GestureDetail, Animation } from '@ionic/angular';
+import { AnimationController, GestureController, GestureDetail, Animation, Platform } from '@ionic/angular';
 import { AlertService } from '../services/alert.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Share, ShareOptions } from '@capacitor/share';
 
 @Component({
   selector: 'app-game',
@@ -39,7 +40,8 @@ export class GamePage implements AfterViewInit {
     private gestureController: GestureController,
     private alertService: AlertService,
     private translate: TranslateService,
-    private animationsController: AnimationController
+    private animationsController: AnimationController,
+    private platform: Platform
   ) { 
 
     this.rows = Array(4).fill(0);
@@ -361,7 +363,8 @@ export class GamePage implements AfterViewInit {
           {
             text: this.translate.instant('label.share'),
             handler: () => {
-              
+              this.sharePuntuation();
+              this.newGame();
             }
           }
         ],
@@ -381,7 +384,8 @@ export class GamePage implements AfterViewInit {
           {
             text: this.translate.instant('label.share'),
             handler: () => {
-              
+              this.sharePuntuation();
+              this.newGame();
             }
           }
         ],
@@ -505,6 +509,23 @@ export class GamePage implements AfterViewInit {
     }
 
     this.animations.push(animation)
+
+  }
+
+  async sharePuntuation() {
+    const shareOptions: ShareOptions = {
+      title: '2048',
+      text: this.translate.instant('label.share.dialog.title', { points: this.points}),
+      dialogTitle: this.translate.instant('label.share.dialog.title', { points: this.points})
+    }
+
+    if (this.platform.is('android')) {
+      shareOptions.url = 'https://play.google.com/';
+    } else if (this.platform.is('ios')){
+      shareOptions.url = 'https://www.apple.com/ms/app-store';
+    }
+
+    await Share.share(shareOptions);
 
   }
 
