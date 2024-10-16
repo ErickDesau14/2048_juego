@@ -334,6 +334,26 @@ export class GamePage implements AfterViewInit {
         ],
         false
       )
+    } else if (this.loseGame()) {
+      this.alertService.alertCustomButtons(
+        this.translate.instant('label.lose.game.title'),
+        this.translate.instant('label.game.content' , { "points": this.points }),
+        [
+          {
+            text: this.translate.instant('label.new.game'),
+            handler: () => {
+
+            }
+          },
+          {
+            text: this.translate.instant('label.share'),
+            handler: () => {
+              
+            }
+          }
+        ],
+        false
+      )
     }else if (this.hasMovement) {
       this.generateRandomNumber();
 
@@ -354,6 +374,33 @@ export class GamePage implements AfterViewInit {
       }      
     }
     return false;
+  }
+
+  loseGame(){
+
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (this.board[i][j] == null) {
+          return false;
+        }
+      }  
+    }
+
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (
+          (this.board[i - 1] && this.board[i - 1][j].value == this.board[i][j].value) ||
+          (this.board[i][j + 1] && this.board[i][j + 1].value == this.board[i][j].value) ||
+          (this.board[i + 1] && this.board[i + 1][j].value == this.board[i][j].value) ||
+          (this.board[i][j - 1] && this.board[i][j - 1].value == this.board[i][j].value)
+        ) {
+          return false;
+        }
+      }  
+    }
+
+    return true;
+
   }
 
 }
