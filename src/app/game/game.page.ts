@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, viewChild } from '@angular/core';
 import { Cell } from '../models/cell';
 import { GestureController, GestureDetail } from '@ionic/angular';
+import { AlertService } from '../services/alert.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-game',
@@ -30,7 +32,9 @@ export class GamePage implements AfterViewInit {
   private pointsRound: number;
 
   constructor(
-    private gestureController: GestureController
+    private gestureController: GestureController,
+    private alertService: AlertService,
+    private translate: TranslateService
   ) { 
 
     this.board = [
@@ -310,10 +314,27 @@ export class GamePage implements AfterViewInit {
 
   checkMove(){
 
-    if (this.winGame()) {
-      console.log("Ganaste");
-      
-    } else if (this.hasMovement) {
+    if(this.winGame()){
+      this.alertService.alertCustomButtons(
+        this.translate.instant('label.win.game.title'),
+        this.translate.instant('label.game.content' , { "points": this.points }),
+        [
+          {
+            text: this.translate.instant('label.new.game'),
+            handler: () => {
+
+            }
+          },
+          {
+            text: this.translate.instant('label.share'),
+            handler: () => {
+              
+            }
+          }
+        ],
+        false
+      )
+    }else if (this.hasMovement) {
       this.generateRandomNumber();
 
       this.hasMovement = false;
