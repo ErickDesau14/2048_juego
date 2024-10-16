@@ -37,19 +37,10 @@ export class GamePage implements AfterViewInit {
     private translate: TranslateService
   ) { 
 
-    this.board = [
-      [null, null, null, null], 
-      [null, null, null, null], 
-      [null, null, null, null],
-      [null, null, null, null]
-    ];
     this.rows = Array(4).fill(0);
     this.cols = Array(4).fill(0);
-    this.generateRandomNumber();
-    this.generateRandomNumber();
-    this.hasMovement = false;
-    this.points = 0;
-    this.pointsRound = 0;
+    this.newGame();
+
   }
   ngAfterViewInit(): void {
 
@@ -322,7 +313,7 @@ export class GamePage implements AfterViewInit {
           {
             text: this.translate.instant('label.new.game'),
             handler: () => {
-
+              this.newGame();
             }
           },
           {
@@ -342,7 +333,7 @@ export class GamePage implements AfterViewInit {
           {
             text: this.translate.instant('label.new.game'),
             handler: () => {
-
+              this.newGame();
             }
           },
           {
@@ -400,6 +391,22 @@ export class GamePage implements AfterViewInit {
     }
 
     return true;
+
+  }
+
+  newGame(){
+    
+    this.board = [
+      [null, null, null, null], 
+      [null, null, null, null], 
+      [null, null, null, null],
+      [null, null, null, null]
+    ];
+    this.generateRandomNumber();
+    this.generateRandomNumber();
+    this.hasMovement = false;
+    this.points = 0;
+    this.pointsRound = 0;
 
   }
 
