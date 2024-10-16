@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, viewChild } from '@angular/core';
 import { Cell } from '../models/cell';
-import { GestureController, GestureDetail } from '@ionic/angular';
+import { AnimationController, GestureController, GestureDetail, Animation } from '@ionic/angular';
 import { AlertService } from '../services/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -31,16 +31,22 @@ export class GamePage implements AfterViewInit {
   public points: number;
   private pointsRound: number;
 
+  private animations: Animation[];
+
+  private isMoving: boolean;
+
   constructor(
     private gestureController: GestureController,
     private alertService: AlertService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private animationsController: AnimationController
   ) { 
 
     this.rows = Array(4).fill(0);
     this.cols = Array(4).fill(0);
     this.newGame();
-
+    this.animations = [];
+    this.isMoving = false;
   }
   ngAfterViewInit(): void {
 
@@ -66,25 +72,35 @@ export class GamePage implements AfterViewInit {
   }
 
   onHSwipe(detail: GestureDetail){
-    console.log("Horizontal");
-    console.log(detail);   
-    
-    if(detail.deltaX < 0){
-      console.log("Izquierda");
-      this.direction = this.DIRECTION_LEFT;
-      this.moveLeft();
-    } else {
-      console.log("Derecha");
-      this.direction = this.DIRECTION_RIGHT;
-      this.moveRight();
-    }
 
-    this.checkMove();
+    if (!this.isMoving) {
+      this.isMoving = true;
+
+      console.log("Horizontal");
+      console.log(detail);   
+      
+      if(detail.deltaX < 0){
+        console.log("Izquierda");
+        this.direction = this.DIRECTION_LEFT;
+        this.moveLeft();
+      } else {
+        console.log("Derecha");
+        this.direction = this.DIRECTION_RIGHT;
+        this.moveRight();
+      }
+  
+      this.checkMove();
+
+    }
     
   }
 
   onVSwipe(detail: GestureDetail){
-    console.log("Vertical");
+
+    if (!this.isMoving) {
+      this.isMoving = true;
+
+      console.log("Vertical");
     console.log(detail);
     
     if(detail.deltaY < 0){
@@ -98,6 +114,7 @@ export class GamePage implements AfterViewInit {
     }
 
     this.checkMove();
+    }
     
   }
 
@@ -114,11 +131,22 @@ export class GamePage implements AfterViewInit {
 
     const probNum4 = Math.floor(Math.random() * 100) + 1;
 
+    let background;
     if(probNum4 <= 25){
       this.board[row][col].value = 4;
+      background = '#BDAC97';
     } else {
       this.board[row][col].value = 2;
+      background = '#BDAC97';
     }
+
+    const animation = this.animationsController.create().addElement(document.getElementById(row + '' + col)).duration(500).fromTo('background', '#BDAC97', background);
+
+    animation.play();
+
+    setTimeout(() => {
+      animation.stop();
+    }, 400);
 
   }
 
@@ -287,6 +315,20 @@ export class GamePage implements AfterViewInit {
 
         this.hasMovement = true;
 
+        let numberCells;
+        switch(this.direction){
+          case this.DIRECTION_LEFT:
+          case this.DIRECTION_RIGHT:
+          numberCells = col - j;
+            break;
+          case this.DIRECTION_UP:
+          case this.DIRECTION_DOWN:
+          numberCells = row - i;
+            break;
+        }
+
+        this.showAnimationMove(i, j, numberCells);
+
       }
     }
   }
@@ -350,7 +392,27 @@ export class GamePage implements AfterViewInit {
 
       this.hasMovement = false;
 
-      this.pointsRound = 0;
+      if (this.pointsRound > 0) {
+        this.showAnimationPoints();
+        this.pointsRound = 0;
+      } else {
+        this.isMoving = false;
+      }
+
+      const animationGrouped = this.animationsController.create().addAnimation(this.animations).duration(100);
+
+      animationGrouped.play();
+
+      setTimeout( () => {
+        animationGrouped.stop();
+        this.animations = [];
+      }, 100);
+      
+      setTimeout(() => {
+        this.isMoving = false;
+      }, 600);
+
+      // this.pointsRound = 0;
 
       this.clearBlockedCells();
     }
@@ -407,6 +469,42 @@ export class GamePage implements AfterViewInit {
     this.hasMovement = false;
     this.points = 0;
     this.pointsRound = 0;
+
+  }
+
+  showAnimationPoints(){
+    const elementPoints = document.getElementById('pointsScored');
+
+    elementPoints.innerHTML = '+' + this.pointsRound;
+
+    const animation = this.animationsController.create().addElement(elementPoints).duration(1000).fromTo('transform', 'translateY(0px)', 'translateY(-30px').fromTo('opacity', 0, 1);
+
+    animation.play();
+
+    setTimeout(() => {
+      animation.stop();
+      elementPoints.innerHTML = '';
+    }, 1000);
+
+  }
+
+  showAnimationMove(row: number, col: number, numberCells: number){
+
+    let animation = this.animationsController.create().addElement(document.getElementById(row + '' + col));
+
+    switch(this.direction){
+      case this.DIRECTION_RIGHT:
+      case this.DIRECTION_LEFT:
+        animation = animation.fromTo('transform', 'translateX(0px)', `translateX(${numberCells * 60}px)`);
+        break;
+
+      case this.DIRECTION_UP:
+      case this.DIRECTION_DOWN:
+        animation = animation.fromTo('transform', 'translateY(0px)', `translateY(${numberCells * 60}px)`);
+        break;
+    }
+
+    this.animations.push(animation)
 
   }
 

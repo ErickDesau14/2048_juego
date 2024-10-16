@@ -1,4 +1,24 @@
 .game{
+
+    --background: #FAF8F0;
+
+    .game-center{
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .points {
+        font-size: 45px;
+        color: #776e65;
+    }
+
+    #pointsScored{
+        font-size: 25px;
+        position: absolute;
+        color: #776e65;
+    }
+
     #board-Game {
 
         width: 280px;
